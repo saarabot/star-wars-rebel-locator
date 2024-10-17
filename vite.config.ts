@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, 'src');
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/",
+  base: "/star-wars-rebel-locator/",
   resolve: {
     alias: {
       '@': root,
