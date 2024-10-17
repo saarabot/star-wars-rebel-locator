@@ -8,16 +8,6 @@
 - and should render the data available for the entity which awaits on that location, in addition to the distance from the user to the entity.
 - The list should be sorted from closest to farthest.
 
-# TODO:
-
-## responsive size
-
-## size with tailwind classes
-
-## context/redux?
-
-## build/host/gh actions and pages
-
 ## Sources and additional info
 
 - data/countries.json
