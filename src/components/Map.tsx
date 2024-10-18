@@ -1,25 +1,49 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Feature, Map, View } from 'ol';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import Icon from 'ol/style/Icon';
-import Style from 'ol/style/Style';
-import Stroke from 'ol/style/Stroke';
+import { Icon, Style, Stroke } from 'ol/style';
+import { Coordinate } from 'ol/coordinate';
+import { Point } from 'ol/geom';
+import { getDistance } from 'ol/sphere';
+import { boundingExtent } from 'ol/extent';
+import { fromLonLat, toLonLat } from 'ol/proj';
+
 import countriesUrl from '@/data/countries.json?url';
 import iconUrl from '@/assets/BlackRedMountain.svg?url';
-import { fromLonLat } from 'ol/proj';
-import { SecretObject } from '@/App';
-import { Point } from 'ol/geom';
-import { boundingExtent } from 'ol/extent';
+// redux setup
+import type { RootState } from '@/store';
+import { Rebel } from '@/types';
+import { setRebels } from '@/features/rebelsSlice';
+import { setLocation } from '@/features/locationSlice';
 
-interface MapComponentProps {
-  targets: SecretObject[];
-}
-
-const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
+const MapComponent: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
+  const [onClickLocation, setOnClickLocation] = useState<Coordinate | null>(
+    null
+  );
+
+  const targets = useSelector((state: RootState) => state.rebels.rebels);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (onClickLocation) {
+      const updatedTargets = targets.map((target: Rebel) => {
+        const distance =
+          getDistance(onClickLocation, [target.long, target.lat]) / 1000;
+        return {
+          ...target,
+          distance: distance,
+        };
+        // update targets to have distance from on click location in kilometers
+      });
+      dispatch(setRebels(updatedTargets));
+      dispatch(setLocation(onClickLocation));
+    }
+  }, [onClickLocation]);
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
@@ -35,7 +59,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
             style: new Style({
               stroke: new Stroke({
                 color: 'yellow',
-                width: 2,
+                width: 1,
               }),
             }),
           }),
@@ -55,7 +79,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
       mapRef.current.on('click', (event) => {
         locationSource.clear();
 
+        const point = mapRef.current!.getCoordinateFromPixel(event.pixel);
+        const p = toLonLat(point);
+        setOnClickLocation(p);
         const coordinates = event.coordinate;
+
         const newMarker = new Feature({
           geometry: new Point(coordinates),
           icon: iconUrl,
@@ -67,15 +95,15 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
     }
   }, []);
 
+  const markerStyle = new Style({
+    image: new Icon({
+      src: iconUrl,
+      scale: 0.12,
+    }),
+  });
+
   useEffect(() => {
     if (targets.length > 0 && mapRef.current) {
-      const markerStyle = new Style({
-        image: new Icon({
-          src: iconUrl,
-          scale: 0.12,
-        }),
-      });
-
       const markerSource = new VectorSource();
       const markerLayer = new VectorLayer({
         source: markerSource,
@@ -83,7 +111,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
 
       targets.forEach((target) => {
         const feature = new Feature({
-          geometry: new Point(fromLonLat([target.long, target.lat])),
+          geometry: target.coordinates,
           info: target.id,
           icon: iconUrl,
         });
@@ -94,7 +122,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
 
       // Zoom to fit all markers
       const extent = boundingExtent(
-        markerSource.getFeatures().map((feature) => {
+        markerSource.getFeatures().map((feature: Feature) => {
           const geometry = feature.getGeometry();
           return geometry ? (geometry as Point).getCoordinates() : [0, 0];
         })
@@ -118,7 +146,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ targets }) => {
       <div
         ref={mapContainer}
         style={{ height: '500px' }}
-        className='border-2 border-amber-400'
+        className='border-2 border-orange-500'
       ></div>
     </div>
   );
