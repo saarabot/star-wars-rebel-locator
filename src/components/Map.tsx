@@ -4,7 +4,7 @@ import { Feature, Map, View } from 'ol';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import { Icon, Style, Stroke } from 'ol/style';
+import { Icon, Style, Stroke, Fill } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
 import { Point } from 'ol/geom';
 import { getDistance } from 'ol/sphere';
@@ -31,6 +31,7 @@ const MapComponent: React.FC = () => {
 
   useEffect(() => {
     if (onClickLocation) {
+      // update targets to have distance from on click location in kilometers
       const updatedTargets = targets.map((target: Rebel) => {
         const distance =
           getDistance(onClickLocation, [target.long, target.lat]) / 1000;
@@ -38,7 +39,6 @@ const MapComponent: React.FC = () => {
           ...target,
           distance: distance,
         };
-        // update targets to have distance from on click location in kilometers
       });
       dispatch(setRebels(updatedTargets));
       dispatch(setLocation(onClickLocation));
@@ -51,7 +51,7 @@ const MapComponent: React.FC = () => {
         target: mapContainer.current,
         layers: [
           new VectorLayer({
-            background: '#1a2b39',
+            background: '#000',
             source: new VectorSource({
               url: countriesUrl,
               format: new GeoJSON(),
@@ -60,6 +60,9 @@ const MapComponent: React.FC = () => {
               stroke: new Stroke({
                 color: 'yellow',
                 width: 1,
+              }),
+              fill: new Fill({
+                color: '#f57014',
               }),
             }),
           }),
