@@ -21,4 +21,5 @@ export interface RebelInfo extends Rebel {
   gender?: string;
   eyeColor?: string;
   skinColor?: string;
+  species?: string;
 }

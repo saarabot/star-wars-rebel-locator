@@ -33,12 +33,18 @@ function App() {
   }, [data]);
 
   return (
-    <div className='container w-auto mx-auto'>
-      <h1 className='text-3xl font-bold text-amber-400 uppercase text-center p-2'>
-        Rebel locator
+    <div
+      className='container mx-auto tracking-wider mt-3'
+      style={{ minWidth: '360px' }}
+    >
+      <h1 className='text-4xl font-bold text-amber-400 italic uppercase p-2 font-display tracking-widest'>
+        Rebel locator{' '}
+        <span className='inline-block text-4xl font-numeric not-italic font-bold text-cyan-500'>
+          2000
+        </span>
       </h1>
-      <div className=' mx-auto'>
-        <div className='lg:flex md:flex'>
+      <div className='mx-auto'>
+        <div className=''>
           <MapComponent />
           <RebelListComponent />
         </div>

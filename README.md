@@ -14,10 +14,6 @@
 - source from Openlayers workshop repo
   https://github.com/openlayers/workshop/blob/main/src/en/data/countries.json?short_path=afdfc39
 
-## Links to remember (for personal use :D)
-
-https://tailwindcss.com/docs/responsive-design
-
 # React + TypeScript + Vite
 
 Template info

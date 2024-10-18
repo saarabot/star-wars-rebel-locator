@@ -11,15 +11,14 @@ export const rebelApi = createApi({
       query: () => `aseevia.github.io/star-wars-frontend/data/secret.json`,
     }),
     /*
+    // Could not get this to work :( 
     getRebelById: builder.query<RebelInfo[], Rebel[]>({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         const promises = _arg.map((rebel) =>
           fetchWithBQ(`akabab.github.io/starwars-api/api/id/${rebel.id}.json`)
         );
         const responses = await Promise.all(promises);
-        console.log(responses);
         const test = await responses.map((r) => r.data as RebelInfo);
-        console.log(test);
         return (await test)
           ? { data: test as RebelInfo[] }
           : { error: test as FetchBaseQueryError };
