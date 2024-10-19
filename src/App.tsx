@@ -12,9 +12,10 @@ import { setRebels } from '@/features/rebelsSlice';
 import { Rebel } from '@/types';
 import MapComponent from '@/components/Map';
 import RebelListComponent from '@/components/RebelList';
+import { ReactTyped } from 'react-typed';
 
 function App() {
-  const { data /*error, isLoading*/ } = useGetRebelsQuery();
+  const { data /*error*/, isLoading } = useGetRebelsQuery();
 
   const dispatch = useDispatch();
 
@@ -43,11 +44,20 @@ function App() {
           2000
         </span>
       </h1>
+
+      {isLoading && (
+        <ReactTyped
+          className='text-amber-300 p-2 font-body'
+          startWhenVisible
+          strings={['Loading..']}
+          typeSpeed={40}
+          cursorChar={'.'}
+          showCursor={true}
+        />
+      )}
       <div className='mx-auto'>
-        <div className=''>
-          <MapComponent />
-          <RebelListComponent />
-        </div>
+        <MapComponent />
+        <RebelListComponent />
       </div>
     </div>
   );
