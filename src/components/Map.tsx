@@ -10,6 +10,7 @@ import { Point } from 'ol/geom';
 import { getDistance } from 'ol/sphere';
 import { boundingExtent } from 'ol/extent';
 import { fromLonLat, toLonLat } from 'ol/proj';
+import CircleStyle from 'ol/style/Circle';
 
 import countriesUrl from '@/data/countries.json?url';
 import iconUrl from '@/assets/BlackRedMountain.svg?url';
@@ -25,6 +26,7 @@ const MapComponent: React.FC = () => {
   const [onClickLocation, setOnClickLocation] = useState<Coordinate | null>(
     null
   );
+  const [targetsDrawn, setTargetsDrawn] = useState<boolean>(false);
 
   const targets = useSelector((state: RootState) => state.rebels.rebels);
   const dispatch = useDispatch();
@@ -69,7 +71,7 @@ const MapComponent: React.FC = () => {
         ],
         view: new View({
           center: fromLonLat([0, 25]),
-          zoom: 3,
+          zoom: 2,
         }),
       });
 
@@ -77,6 +79,16 @@ const MapComponent: React.FC = () => {
       const locationSource = new VectorSource();
       const locationLayer = new VectorLayer({
         source: locationSource,
+      });
+      const locationStyle = new Style({
+        image: new CircleStyle({
+          radius: 8,
+          fill: new Fill({ color: '#06b6d4' }),
+          stroke: new Stroke({
+            color: 'white',
+            width: 3,
+          }),
+        }),
       });
 
       mapRef.current.on('click', (event) => {
@@ -89,8 +101,8 @@ const MapComponent: React.FC = () => {
 
         const newMarker = new Feature({
           geometry: new Point(coordinates),
-          icon: iconUrl,
         });
+        newMarker.setStyle(locationStyle);
 
         locationSource.addFeature(newMarker);
       });
@@ -98,18 +110,18 @@ const MapComponent: React.FC = () => {
     }
   }, []);
 
-  const markerStyle = new Style({
-    image: new Icon({
-      src: iconUrl,
-      scale: 0.12,
-    }),
-  });
-
   useEffect(() => {
-    if (targets.length > 0 && mapRef.current) {
+    if (targets.length > 0 && mapRef.current && !targetsDrawn) {
       const markerSource = new VectorSource();
       const markerLayer = new VectorLayer({
         source: markerSource,
+      });
+
+      const markerStyle = new Style({
+        image: new Icon({
+          src: iconUrl,
+          scale: 0.12,
+        }),
       });
 
       targets.forEach((target) => {
@@ -130,22 +142,17 @@ const MapComponent: React.FC = () => {
           return geometry ? (geometry as Point).getCoordinates() : [0, 0];
         })
       );
+
       mapRef.current
         .getView()
         .fit(extent, { duration: 1000, padding: [200, 50, 50, 50] });
+
+      setTargetsDrawn(true);
     }
   }, [targets]);
 
   return (
-    <div
-      style={{
-        height: '100%',
-        minHeight: '200px',
-        width: '100%',
-        position: 'relative',
-      }}
-      className='mr-1'
-    >
+    <div className='h-full w-full mb-3'>
       <div
         ref={mapContainer}
         style={{ height: '500px' }}
