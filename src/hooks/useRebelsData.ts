@@ -8,7 +8,7 @@ import { setRebels } from '@/features/rebelsSlice';
 import { Rebel } from '@/types';
 
 export const useRebelsData = () => {
-  const { data, isLoading } = useGetRebelsQuery();
+  const { data, isLoading, error } = useGetRebelsQuery();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,5 +22,5 @@ export const useRebelsData = () => {
     }
   }, [data, dispatch]);
 
-  return { isLoading };
+  return { isLoading, error };
 };

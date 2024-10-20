@@ -23,7 +23,12 @@ const fetchRebelData = async (rebels: Rebel[]) => {
     (rebel) => `https://akabab.github.io/starwars-api/api/id/${rebel.id}.json`
   );
   const fetchPromises = fetchUrls.map((url) =>
-    fetch(url).then((response) => response.json())
+    fetch(url).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch rebel data, better DM Bruce Willis`);
+      }
+      return response.json();
+    })
   );
   const responses = await Promise.all(fetchPromises);
   return responses as RebelInfo[];
@@ -34,14 +39,24 @@ export const useRebelData = () => {
   const location = useSelector((state: RootState) => state.location.location);
   const [rebelData, setRebelData] = useState<RebelInfo[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const fetchedData = await fetchRebelData(rebels);
-      setRebelData(fetchedData);
-      setLoading(false);
-      setRebelData(mergeData(rebels, fetchedData));
+      setError(null);
+      try {
+        const fetchedData = await fetchRebelData(rebels);
+        setRebelData(mergeData(rebels, fetchedData));
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (location && !rebelData) {
@@ -56,5 +71,5 @@ export const useRebelData = () => {
     }
   }, [location]); // Re-merge data when location changes
 
-  return { rebelData, loading, location };
+  return { rebelData, loading, error, location };
 };
