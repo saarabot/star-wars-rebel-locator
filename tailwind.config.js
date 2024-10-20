@@ -8,6 +8,9 @@ export default {
         body: ['Oxanium'],
         numeric: ['Orbitron'],
       },
+      screens: {
+        xs: '450px',
+      },
     },
   },
   plugins: [],

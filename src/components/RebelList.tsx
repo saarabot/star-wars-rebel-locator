@@ -72,10 +72,6 @@ const RebelListComponent: React.FC = () => {
     );
   };
 
-  // TODO:
-  // 4. update sort when orientation/screen size changes
-  // 5. missing distances on re-render
-
   return (
     <div className='border-2 border-orange-500 p-2 min-w-72 max-lg:mt-4'>
       <h2 className='uppercase text-2xl font-semibold text-amber-300 p-1 font-display tracking-widest'>
@@ -89,7 +85,7 @@ const RebelListComponent: React.FC = () => {
           className='grid lg:grid-cols-2 md:grid-cols-2'
         >
           {_rebels.map((rebel) => {
-            return <RebelComponent rebelData={rebel} />;
+            return <RebelComponent key={rebel.id} rebelData={rebel} />;
           })}
         </div>
       )}
