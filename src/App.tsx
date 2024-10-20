@@ -11,10 +11,7 @@ function App() {
   const { isLoading, error } = useRebelsData();
 
   return (
-    <div
-      className='container mx-auto tracking-wider mt-1 sm:mt-3 xs:w-full w-11/12'
-      style={{ minWidth: '360px' }}
-    >
+    <div className='container mx-auto tracking-wider mt-1 sm:mt-3 xs:w-full w-11/12 min-w-[360px]'>
       <h1 className='text-2xl xs:text-4xl font-bold text-amber-400 italic uppercase p-2 pt-0 font-display tracking-widest'>
         Rebel locator{' '}
         <span className='inline-block text-2xl xs:text-4xl font-numeric not-italic font-bold text-cyan-500'>
@@ -37,7 +34,7 @@ function App() {
         />
       )}
       {!isLoading && !error && (
-        <div className='mx-auto'>
+        <div className='content-container'>
           <ErrorBoundary
             fallback={
               <TypedText
@@ -56,7 +53,9 @@ function App() {
                 />
               }
             >
-              <MapComponent />
+              <div className='w-full'>
+                <MapComponent />
+              </div>
               <RebelListComponent />
             </Suspense>
           </ErrorBoundary>

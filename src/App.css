@@ -1,0 +1,13 @@
+.content-container {
+  @apply flex flex-col relative h-[95vh] overflow-hidden;
+}
+
+.rebel-list-container {
+  @apply flex flex-1 overflow-y-auto mb-[50px];
+}
+.rebel-list {
+  @apply relative overflow-y-auto;
+}
+.rebel-header {
+  @apply sticky top-0 bg-black z-10 p-[10px];
+}
