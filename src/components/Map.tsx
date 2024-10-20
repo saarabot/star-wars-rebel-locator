@@ -13,7 +13,7 @@ import { fromLonLat, toLonLat } from 'ol/proj';
 import CircleStyle from 'ol/style/Circle';
 
 import countriesUrl from '@/data/countries.json?url';
-import iconUrl from '@/assets/BlackRedMountain.svg?url';
+import iconUrl from '@/assets/Red_triangle_with_thick_white_border.svg?url';
 // redux setup
 import type { RootState } from '@/store';
 import { Rebel } from '@/types';
@@ -120,7 +120,7 @@ const MapComponent: React.FC = () => {
       const markerStyle = new Style({
         image: new Icon({
           src: iconUrl,
-          scale: 0.12,
+          scale: 0.08,
         }),
       });
 
