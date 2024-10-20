@@ -1,63 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
-import { Rebel, RebelInfo } from '@/types';
+import React from 'react';
+import { RebelInfo } from '@/types';
 import { ReactTyped } from 'react-typed';
 import RebelComponent from './RebelComponent';
+import { useRebelData } from '@/hooks/useRebelData';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const RebelListComponent: React.FC = () => {
-  const rebels = useSelector((state: RootState) => state.rebels.rebels);
-  const location = useSelector((state: RootState) => state.location.location);
-
-  const [_rebels, _setRebels] = useState<RebelInfo[] | null>();
-  const [rebelData, setRebelData] = useState<RebelInfo[] | null>();
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const mergeData = (rebels: Rebel[], rebelInfos: RebelInfo[]) => {
-    const combinedList = [...rebelInfos, ...rebels] as RebelInfo[];
-    const mergedMap = combinedList.reduce((map, rebel) => {
-      if (map.has(rebel.id)) {
-        map.set(rebel.id, { ...map.get(rebel.id), ...rebel });
-      } else {
-        map.set(rebel.id, { ...rebel });
-      }
-      return map;
-    }, new Map<number, RebelInfo>());
-    const mergedInfos = Array.from(mergedMap.values());
-    mergedInfos.sort((a, b) => a.distance! - b.distance!);
-
-    _setRebels(mergedInfos);
-    setLoading(false);
-  };
-
-  const fetchRebelData = () => {
-    setLoading(true);
-    const fetchUrls = rebels.map((rebel) => {
-      return `https://akabab.github.io/starwars-api/api/id/${rebel.id}.json`;
-    });
-
-    // map urls to fetch promises and store in array
-    const fetchPromises = fetchUrls.map((url) =>
-      fetch(url).then((response) => response.json())
-    );
-    // handle all fetch promises
-    Promise.all(fetchPromises)
-      .then((responses) => {
-        const responseData = responses.map((response: RebelInfo) => response);
-        // save responseData
-        setRebelData(responseData);
-        mergeData(rebels, responseData);
-      })
-      .catch((error) => console.log('error', error));
-  };
-
-  useEffect(() => {
-    if (location && !rebelData) {
-      fetchRebelData();
-    } else if (location && rebelData) {
-      mergeData(rebels, rebelData);
-    }
-  }, [rebels, location]);
+  const { rebelData, loading, location } = useRebelData();
 
   const animateText = (textContent: string, cursorChar?: string) => {
     return (
@@ -79,14 +28,27 @@ const RebelListComponent: React.FC = () => {
       </h2>
       {loading && animateText('Loading..', '.')}
       {!location && animateText('Set location on map to load', '>')}
-      {location && _rebels && (
+      {location && rebelData && (
         <div
           id='rebels-container'
           className='grid lg:grid-cols-2 md:grid-cols-2'
         >
-          {_rebels.map((rebel) => {
-            return <RebelComponent key={rebel.id} rebelData={rebel} />;
-          })}
+          <AnimatePresence>
+            {rebelData.map((rebel: RebelInfo) => {
+              return (
+                <motion.div
+                  key={rebel.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 50 }}
+                  transition={{ duration: 0.5 }}
+                  layout
+                >
+                  <RebelComponent key={rebel.id} rebelData={rebel} />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       )}
     </div>

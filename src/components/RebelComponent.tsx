@@ -26,7 +26,7 @@ const RebelComponent: React.FC<RebelComponentProps> = ({ rebelData }) => {
     <div
       id='rebel-container'
       key={rebelData.id}
-      className='m-1 border border-orange-500 flex p-2 pb-1 sm:p-3'
+      className='m-1 border border-orange-500 flex p-2 pb-1 sm:p-3 background-black'
     >
       <div id='rebel-image-container' className='w-28 mx-auto mt-1'>
         <img
