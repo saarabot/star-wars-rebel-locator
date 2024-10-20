@@ -22,15 +22,11 @@ const RebelComponent: React.FC<RebelComponentProps> = ({ rebelData }) => {
     );
   };
 
-  // TODO:
-  // 1. onclick rebel card set zoom/focus/bounds on map
-  // to bound location and selection
-
   return (
     <div
       id='rebel-container'
       key={rebelData.id}
-      className='m-1 border border-orange-500 flex p-3'
+      className='m-1 border border-orange-500 flex p-2 pb-1 sm:p-3'
     >
       <div id='rebel-image-container' className='w-28 mx-auto mt-1'>
         <img
@@ -38,7 +34,10 @@ const RebelComponent: React.FC<RebelComponentProps> = ({ rebelData }) => {
           src={rebelData.image}
         />
       </div>
-      <div id='rebel-info-container' className='flex-none w-2/3 mx-auto'>
+      <div
+        id='rebel-info-container'
+        className='flex-none w-2/3 mx-auto pl-2 xs:pl-0'
+      >
         <div className='grow min-w-full'>
           {infoParagraph('Name', rebelData.name)}
         </div>

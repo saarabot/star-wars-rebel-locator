@@ -155,8 +155,7 @@ const MapComponent: React.FC = () => {
     <div className='h-full w-full mb-3'>
       <div
         ref={mapContainer}
-        style={{ height: '500px' }}
-        className='border-2 border-orange-500'
+        className='border-2 border-orange-500 h-80 sm:h-96 lg:h-[32rem]'
       ></div>
     </div>
   );

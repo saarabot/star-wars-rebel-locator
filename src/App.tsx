@@ -35,12 +35,12 @@ function App() {
 
   return (
     <div
-      className='container mx-auto tracking-wider mt-3'
+      className='container mx-auto tracking-wider mt-1 sm:mt-3 xs:w-full w-11/12'
       style={{ minWidth: '360px' }}
     >
-      <h1 className='text-4xl font-bold text-amber-400 italic uppercase p-2 font-display tracking-widest'>
+      <h1 className='text-2xl xs:text-4xl font-bold text-amber-400 italic uppercase p-2 pt-0 font-display tracking-widest'>
         Rebel locator{' '}
-        <span className='inline-block text-4xl font-numeric not-italic font-bold text-cyan-500'>
+        <span className='inline-block text-2xl xs:text-4xl font-numeric not-italic font-bold text-cyan-500'>
           2000
         </span>
       </h1>
