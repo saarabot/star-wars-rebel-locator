@@ -1,14 +1,13 @@
 import React, { lazy, Suspense } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { RebelInfo } from '@/types';
 import TypedText from '@/components/TypedText';
-//import RebelComponent from '@/components/RebelComponent';
 import { useRebelData } from '@/hooks/useRebelData';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const RebelComponent = lazy(() => import('@/components/RebelComponent'));
 
 const RebelListComponent: React.FC = () => {
-  const { rebelData, loading, location } = useRebelData();
+  const { rebelData, loading, error, location } = useRebelData();
 
   return (
     <div className='border-2 border-orange-500 p-2 min-w-72 max-lg:mt-4'>
@@ -22,7 +21,14 @@ const RebelListComponent: React.FC = () => {
           cursorChar='.'
         />
       )}
-      {!location && (
+      {error && (
+        <TypedText
+          className='text-amber-300 p-2 font-body'
+          text='Failed to fetch data, better DM Bruce Willis'
+          cursorChar='!'
+        />
+      )}
+      {!location && !error && (
         <TypedText
           className='text-amber-300 p-2 font-body'
           text='Set location on map to load'

@@ -9,7 +9,7 @@ export default {
         numeric: ['Orbitron'],
       },
       screens: {
-        xs: '450px',
+        xs: '500px',
       },
     },
   },

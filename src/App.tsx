@@ -3,11 +3,12 @@ import { Suspense, lazy } from 'react';
 import RebelListComponent from '@/components/RebelList';
 import TypedText from '@/components/TypedText';
 import { useRebelsData } from '@/hooks/useRebelsData';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const MapComponent = lazy(() => import('@/components/Map'));
 
 function App() {
-  const { isLoading } = useRebelsData();
+  const { isLoading, error } = useRebelsData();
 
   return (
     <div
@@ -28,20 +29,39 @@ function App() {
           cursorChar='.'
         />
       )}
-      <div className='mx-auto'>
-        <Suspense
-          fallback={
-            <TypedText
-              className='text-amber-300 p-2 font-body'
-              text='Loading..'
-              cursorChar='.'
-            />
-          }
-        >
-          <MapComponent />
-          <RebelListComponent />
-        </Suspense>
-      </div>
+      {error && (
+        <TypedText
+          className='text-amber-300 p-2 font-body'
+          text='Error fetching data, just to be sure, DM Bruce Willis'
+          cursorChar='.'
+        />
+      )}
+      {!isLoading && !error && (
+        <div className='mx-auto'>
+          <ErrorBoundary
+            fallback={
+              <TypedText
+                className='text-amber-300 p-2 font-body'
+                text='Something went wrong, we might need to call Bruce Willis'
+                cursorChar='!'
+              />
+            }
+          >
+            <Suspense
+              fallback={
+                <TypedText
+                  className='text-amber-300 p-2 font-body'
+                  text='Loading..'
+                  cursorChar='.'
+                />
+              }
+            >
+              <MapComponent />
+              <RebelListComponent />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+      )}
     </div>
   );
 }
