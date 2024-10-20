@@ -1,8 +1,10 @@
 import './App.css';
-import { ReactTyped } from 'react-typed';
-import MapComponent from '@/components/Map';
+import { Suspense, lazy } from 'react';
 import RebelListComponent from '@/components/RebelList';
+import TypedText from '@/components/TypedText';
 import { useRebelsData } from '@/hooks/useRebelsData';
+
+const MapComponent = lazy(() => import('@/components/Map'));
 
 function App() {
   const { isLoading } = useRebelsData();
@@ -20,18 +22,25 @@ function App() {
       </h1>
 
       {isLoading && (
-        <ReactTyped
+        <TypedText
           className='text-amber-300 p-2 font-body'
-          startWhenVisible
-          strings={['Loading..']}
-          typeSpeed={40}
-          cursorChar={'.'}
-          showCursor={true}
+          text='Loading..'
+          cursorChar='.'
         />
       )}
       <div className='mx-auto'>
-        <MapComponent />
-        <RebelListComponent />
+        <Suspense
+          fallback={
+            <TypedText
+              className='text-amber-300 p-2 font-body'
+              text='Loading..'
+              cursorChar='.'
+            />
+          }
+        >
+          <MapComponent />
+          <RebelListComponent />
+        </Suspense>
       </div>
     </div>
   );

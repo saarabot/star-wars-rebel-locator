@@ -1,6 +1,6 @@
 import React from 'react';
 import { RebelInfo } from '@/types';
-import { ReactTyped } from 'react-typed';
+import TypedText from '@/components/TypedText';
 
 interface RebelComponentProps {
   rebelData: RebelInfo;
@@ -11,12 +11,10 @@ const RebelComponent: React.FC<RebelComponentProps> = ({ rebelData }) => {
     const constructedString = `${label}: <b>${value}</b>`;
     return (
       <p>
-        <ReactTyped
+        <TypedText
           className='text-amber-300 font-body'
-          startWhenVisible
-          typeSpeed={40}
+          text={constructedString}
           showCursor={false}
-          strings={[constructedString]}
         />
       </p>
     );

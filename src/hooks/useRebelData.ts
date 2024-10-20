@@ -14,7 +14,6 @@ const mergeData = (rebels: Rebel[], rebelInfos: RebelInfo[]) => {
     return map;
   }, new Map<number, RebelInfo>());
   const mergedInfos = Array.from(mergedMap.values());
-  console.log(mergedInfos);
   mergedInfos.sort((a, b) => a.distance! - b.distance!);
   return mergedInfos;
 };
@@ -46,7 +45,6 @@ export const useRebelData = () => {
     };
 
     if (location && !rebelData) {
-      console.log('loading data');
       loadData();
     }
   }, [rebels, location]);
